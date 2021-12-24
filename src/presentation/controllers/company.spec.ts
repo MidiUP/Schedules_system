@@ -1,6 +1,9 @@
 import { CompanyController } from './company'
 import { ValidatorParams } from '../interfaces/validator'
 import { InvalidParamsError } from '../errors/invalid-params-error'
+import { Repository } from '../interfaces/repository'
+import { CompanyViewModel } from '../../domain/usecases/company-view-model'
+import { ServerError } from '../errors/server-error'
 
 const makeValidatorParams = (): ValidatorParams => {
   class ValidatorParamsStub implements ValidatorParams {
@@ -11,17 +14,40 @@ const makeValidatorParams = (): ValidatorParams => {
   return new ValidatorParamsStub()
 }
 
+const makeCompanyRepository = (): Repository => {
+  class CompanyRepositoryStub implements Repository {
+    async create (companyViewModel: CompanyViewModel): Promise<any> {
+      return new Promise(resolve => resolve({
+        id: 0,
+        name: 'valid_name',
+        phone: 'valid_phone',
+        address: 'valid_addres',
+        employees: 0,
+        logo: 'valid_logo'
+      }))
+    }
+
+    async get (): Promise<any> {
+      return new Promise(resolve => resolve(0))
+    }
+  }
+  return new CompanyRepositoryStub()
+}
+
 interface SutTypes {
   validator: ValidatorParams
   sut: CompanyController
+  CompanyRepositoryStub: Repository
 }
 
 const makeSut = (): SutTypes => {
   const validator = makeValidatorParams()
-  const sut = new CompanyController(validator)
+  const CompanyRepositoryStub = makeCompanyRepository()
+  const sut = new CompanyController(validator, CompanyRepositoryStub)
   return {
     validator,
-    sut
+    sut,
+    CompanyRepositoryStub
   }
 }
 
@@ -43,14 +69,59 @@ describe('Company Controller', () => {
     expect(httpResponse.body).toEqual(new InvalidParamsError())
   })
 
-  test('first test', async () => {
+  test('return code 500 if throws createCompany', async () => {
+    const { sut, CompanyRepositoryStub } = makeSut()
+    jest.spyOn(CompanyRepositoryStub, 'create').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    const HttpRequest = {
+      header: null,
+      body: {
+        name: 'valid_name',
+        email: 'valid@mail.com',
+        address: 'valid_address',
+        employees: 0,
+        logo: 'valid_logo'
+      }
+    }
+
+    const result = await sut.createCompany(HttpRequest)
+    expect(result.statusCode).toBe(500)
+    expect(result.body).toEqual(new ServerError())
+  })
+
+  test('create method is being called with the correct parameters', async () => {
+    const { sut, CompanyRepositoryStub } = makeSut()
+    const companyRepositorySpy = jest.spyOn(CompanyRepositoryStub, 'create')
+    const HttpRequest = {
+      header: null,
+      body: {
+        name: 'valid_name',
+        email: 'valid@mail.com',
+        address: 'valid_address',
+        employees: 0,
+        logo: 'valid_logo'
+      }
+    }
+
+    await sut.createCompany(HttpRequest)
+    expect(companyRepositorySpy).toHaveBeenCalledWith({
+      name: 'valid_name',
+      email: 'valid@mail.com',
+      address: 'valid_address',
+      employees: 0,
+      logo: 'valid_logo'
+    })
+  })
+
+  test('return code 200 createCompany sucess', async () => {
     const { sut } = makeSut()
     const HttpRequest = {
       header: null,
       body: {
         name: 'valid_name',
         email: 'valid@mail.com',
-        address: 'valid_address'
+        address: 'valid_address',
+        employees: 0,
+        logo: 'valid_logo'
       }
     }
 
