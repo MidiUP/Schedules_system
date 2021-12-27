@@ -1,17 +1,26 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router } from 'express'
 import { makeCompanyController } from '../../main/factories/company'
 
 export default (router: Router): void => {
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   router.get('/company', async (req, res) => {
     const controller = makeCompanyController()
-    const request = req.body
-    const response = await controller.getCompanies(request)
+    const response = await controller.getCompanies()
     res.statusCode = response.statusCode
     return res.json(response.body)
   })
 
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  router.get('/company/:id', async (req, res) => {
+    const controller = makeCompanyController()
+    const request = {
+      header: req,
+      body: req.body
+    }
+    const response = await controller.getCompanyById(request)
+    res.statusCode = response.statusCode
+    return res.json(response.body)
+  })
+
   router.post('/company', async (req, res) => {
     const controller = makeCompanyController()
     const request = {
@@ -19,6 +28,17 @@ export default (router: Router): void => {
       body: req.body
     }
     const response = await controller.createCompany(request)
+    res.statusCode = response.statusCode
+    return res.json(response.body)
+  })
+
+  router.delete('/company/:id', async (req, res) => {
+    const controller = makeCompanyController()
+    const request = {
+      header: req,
+      body: req.body
+    }
+    const response = await controller.deleteCompany(request)
     res.statusCode = response.statusCode
     return res.json(response.body)
   })

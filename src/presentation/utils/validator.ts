@@ -1,6 +1,19 @@
 import { ValidatorParams } from '../interfaces/validator'
+import * as yup from 'yup'
+
 export class Validator implements ValidatorParams {
-  async validate (viewModel: any): Promise<boolean> {
-    return new Promise(resolve => resolve(true))
+  private readonly viewModel: any
+
+  constructor (viewModel: any) {
+    this.viewModel = viewModel
+  }
+
+  async validate (viewModelTest: any): Promise<boolean> {
+    const schema = yup.object().shape(this.viewModel)
+    if ((await schema.isValid(viewModelTest))) {
+      return new Promise(resolve => resolve(true))
+    } else {
+      return new Promise(resolve => resolve(false))
+    }
   }
 }

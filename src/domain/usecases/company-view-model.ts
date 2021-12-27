@@ -4,5 +4,4 @@ export interface CompanyViewModel {
   address: string
   employees: number
   logo: string
-
 }

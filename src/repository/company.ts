@@ -13,7 +13,19 @@ export class CompanyRepository implements Repository {
   }
 
   async get (): Promise<any> {
-    const result = await this.repository.findAll()
+    const result = await this.repository.findAll({ where: { is_deleted: false } })
     return result
+  }
+
+  async getById (id: number): Promise<any> {
+    const result = await this.repository.findByPk(id)
+    return result
+  }
+
+  async delete (id: number): Promise<any> {
+    const result = await this.repository.findByPk(id)
+    result.is_deleted = true
+    await result.update(result)
+    return await result.save()
   }
 }

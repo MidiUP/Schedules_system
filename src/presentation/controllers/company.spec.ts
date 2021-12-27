@@ -28,7 +28,15 @@ const makeCompanyRepository = (): Repository => {
     }
 
     async get (): Promise<any> {
-      return new Promise(resolve => resolve(0))
+      return new Promise(resolve => resolve({}))
+    }
+
+    async getById (): Promise<any> {
+      return new Promise(resolve => resolve({}))
+    }
+
+    async delete (): Promise<void> {
+      return new Promise(resolve => resolve())
     }
   }
   return new CompanyRepositoryStub()
@@ -52,6 +60,8 @@ const makeSut = (): SutTypes => {
 }
 
 describe('Company Controller', () => {
+  // createCompany
+
   test('return 400 for invalid data', async () => {
     const { sut, validator } = makeSut()
     jest.spyOn(validator, 'validate').mockReturnValueOnce(new Promise((resolve) => resolve(false)))
@@ -66,7 +76,7 @@ describe('Company Controller', () => {
 
     const httpResponse = await sut.createCompany(HttpRequest)
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new InvalidParamsError())
+    expect(httpResponse.body).toEqual(new InvalidParamsError().message)
   })
 
   test('return code 500 if throws createCompany', async () => {
@@ -85,7 +95,7 @@ describe('Company Controller', () => {
 
     const result = await sut.createCompany(HttpRequest)
     expect(result.statusCode).toBe(500)
-    expect(result.body).toEqual(new ServerError())
+    expect(result.body).toEqual(new ServerError().message)
   })
 
   test('create method is being called with the correct parameters', async () => {
@@ -127,5 +137,58 @@ describe('Company Controller', () => {
 
     const result = await sut.createCompany(HttpRequest)
     expect(result.statusCode).toBe(200)
+    expect(result.body).toEqual({
+      id: 0,
+      name: 'valid_name',
+      phone: 'valid_phone',
+      address: 'valid_addres',
+      employees: 0,
+      logo: 'valid_logo'
+    })
+  })
+
+  // getCompanies
+
+  test('return code 200 getCompanies sucess', async () => {
+    const { sut } = makeSut()
+    const result = await sut.getCompanies()
+    expect(result.statusCode).toBe(200)
+  })
+
+  test('return code 500 getCompany failed', async () => {
+    const { sut, CompanyRepositoryStub } = makeSut()
+    jest.spyOn(CompanyRepositoryStub, 'get').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    const result = await sut.getCompanies()
+    expect(result.statusCode).toBe(500)
+  })
+
+  // getCompanyById
+  test('return code 200 getCompanyById sucess', async () => {
+    const { sut } = makeSut()
+    const result = await sut.getCompanies()
+    expect(result.statusCode).toBe(200)
+  })
+
+  test('return code 500 getById throw', async () => {
+    const { sut, CompanyRepositoryStub } = makeSut()
+    jest.spyOn(CompanyRepositoryStub, 'getById').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    const req = {
+      header: 2,
+      body: ''
+    }
+    const result = await sut.getCompanyById(req)
+    expect(result.statusCode).toBe(500)
+  })
+
+  // deleteCompany
+  test('return code 200 delete throw', async () => {
+    const { sut, CompanyRepositoryStub } = makeSut()
+    jest.spyOn(CompanyRepositoryStub, 'getById').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    const req = {
+      header: 2,
+      body: ''
+    }
+    const result = await sut.getCompanyById(req)
+    expect(result.statusCode).toBe(500)
   })
 })

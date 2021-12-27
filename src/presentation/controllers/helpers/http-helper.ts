@@ -5,13 +5,13 @@ import { InvalidParamsError } from '../../errors/invalid-params-error'
 export const badRequest = (): HttpResponse => {
   return ({
     statusCode: 400,
-    body: new InvalidParamsError()
+    body: new InvalidParamsError().message
   })
 }
 
 export const serverError = (): HttpResponse => {
   return ({
     statusCode: 500,
-    body: new ServerError()
+    body: new ServerError().message
   })
 }

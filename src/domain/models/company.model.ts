@@ -17,7 +17,6 @@ export class Company extends Model {
   @Column
   logo: string
 
-  // @Column
-  // @AllowNull(false)
-  // is_deleted: boolean
+  @Column
+  is_deleted: boolean
 }

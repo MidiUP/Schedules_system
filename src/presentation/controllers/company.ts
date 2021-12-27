@@ -12,9 +12,22 @@ export class CompanyController {
     this.companyRepository = companyRepository
   }
 
-  async getCompanies (req: HttpRequest): Promise<HttpResponse> {
+  async getCompanies (): Promise<HttpResponse> {
     try {
       const result = await this.companyRepository.get()
+      return {
+        statusCode: 200,
+        body: result
+      }
+    } catch (err) {
+      console.error(err)
+      return serverError()
+    }
+  }
+
+  async getCompanyById (req: HttpRequest): Promise<HttpResponse> {
+    try {
+      const result = await this.companyRepository.getById(req.header.params.id)
       return {
         statusCode: 200,
         body: result
@@ -35,6 +48,19 @@ export class CompanyController {
       return {
         statusCode: 200,
         body: newCompany
+      }
+    } catch (err) {
+      console.error(err)
+      return serverError()
+    }
+  }
+
+  async deleteCompany (req: HttpRequest): Promise<HttpResponse> {
+    try {
+      const result = await this.companyRepository.delete(req.header.params.id)
+      return {
+        statusCode: 200,
+        body: result
       }
     } catch (err) {
       console.error(err)
