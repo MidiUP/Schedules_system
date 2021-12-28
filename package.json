@@ -4,8 +4,8 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "nodemon src/main/server.ts",
-        "test": "jest --passWithNoTests --watch"
+        "start": "nodemon src/main/server.ts ",
+        "test": "jest --passWithNoTests --watch --silent --unhandled-rejections=strict"
     },
     "repository": {
         "type": "git",

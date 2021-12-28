@@ -1,6 +1,6 @@
 import { HttpRequest, HttpResponse } from '../protocols/http'
 import { ValidatorParams } from '../interfaces/validator'
-import { serverError, badRequest } from '../controllers/helpers/http-helper'
+import { serverError, badRequest, notFound } from '../controllers/helpers/http-helper'
 import { Repository } from '../interfaces/repository'
 
 export class CompanyController {
@@ -28,6 +28,9 @@ export class CompanyController {
   async getCompanyById (req: HttpRequest): Promise<HttpResponse> {
     try {
       const result = await this.companyRepository.getById(req.header.params.id)
+      if (!result) {
+        return notFound()
+      }
       return {
         statusCode: 200,
         body: result
@@ -55,9 +58,32 @@ export class CompanyController {
     }
   }
 
+  async putCompany (req: HttpRequest): Promise<HttpResponse> {
+    try {
+      const isValid = await this.validator.validate(req.body)
+      if (!isValid) {
+        return badRequest()
+      }
+      const result = await this.companyRepository.put(req.header.params.id, req.body)
+      if (!result) {
+        return notFound()
+      }
+      return {
+        statusCode: 200,
+        body: result
+      }
+    } catch (err) {
+      console.error(err)
+      return serverError()
+    }
+  }
+
   async deleteCompany (req: HttpRequest): Promise<HttpResponse> {
     try {
       const result = await this.companyRepository.delete(req.header.params.id)
+      if (!result) {
+        return notFound()
+      }
       return {
         statusCode: 200,
         body: result

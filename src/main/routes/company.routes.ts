@@ -32,6 +32,17 @@ export default (router: Router): void => {
     return res.json(response.body)
   })
 
+  router.put('/company/:id', async (req, res) => {
+    const controller = makeCompanyController()
+    const request = {
+      header: req,
+      body: req.body
+    }
+    const response = await controller.putCompany(request)
+    res.statusCode = response.statusCode
+    return res.json(response.body)
+  })
+
   router.delete('/company/:id', async (req, res) => {
     const controller = makeCompanyController()
     const request = {

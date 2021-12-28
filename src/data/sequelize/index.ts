@@ -1,4 +1,5 @@
 import { Sequelize } from 'sequelize-typescript'
+import path from 'path'
 
 export const sequelize = new Sequelize({
   database: 'schedules_api',
@@ -6,6 +7,5 @@ export const sequelize = new Sequelize({
   username: 'root',
   password: 'Delivery@2120',
   storage: ':memory:',
-  // eslint-disable-next-line node/no-path-concat
-  models: [__dirname + '/**/*.model.ts']
+  models: [path.resolve(__dirname, '../', '../', 'domain', 'models')]
 })

@@ -28,15 +28,59 @@ const makeCompanyRepository = (): Repository => {
     }
 
     async get (): Promise<any> {
-      return new Promise(resolve => resolve({}))
+      return new Promise(resolve => resolve([
+        {
+          id: 0,
+          name: 'valid_name',
+          phone: 'valid_phone',
+          address: 'valid_addres',
+          employees: 0,
+          logo: 'valid_logo'
+        },
+        {
+          id: 1,
+          name: 'valid_name',
+          phone: 'valid_phone',
+          address: 'valid_addres',
+          employees: 0,
+          logo: 'valid_logo'
+        }
+      ]))
     }
 
     async getById (): Promise<any> {
-      return new Promise(resolve => resolve({}))
+      return new Promise(resolve => resolve({
+        id: 0,
+        name: 'valid_name',
+        phone: 'valid_phone',
+        address: 'valid_addres',
+        employees: 0,
+        logo: 'valid_logo'
+      }))
     }
 
-    async delete (): Promise<void> {
-      return new Promise(resolve => resolve())
+    async delete (id: number): Promise<any> {
+      return new Promise(resolve => resolve({
+        id: 0,
+        name: 'valid_name',
+        phone: 'valid_phone',
+        address: 'valid_addres',
+        employees: 0,
+        logo: 'valid_logo',
+        is_deleted: true
+      }))
+    }
+
+    async put (id: number, object: CompanyViewModel): Promise<any> {
+      return new Promise(resolve => resolve({
+        id: 0,
+        name: 'updated_name',
+        phone: 'updated_phone',
+        address: 'updated_addres',
+        employees: 0,
+        logo: 'updated_logo',
+        is_deleted: false
+      }))
     }
   }
   return new CompanyRepositoryStub()
@@ -180,15 +224,86 @@ describe('Company Controller', () => {
     expect(result.statusCode).toBe(500)
   })
 
-  // deleteCompany
-  test('return code 200 delete throw', async () => {
+  test('return code 404 getById not found', async () => {
     const { sut, CompanyRepositoryStub } = makeSut()
-    jest.spyOn(CompanyRepositoryStub, 'getById').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    jest.spyOn(CompanyRepositoryStub, 'getById').mockReturnValueOnce(new Promise(resolve => resolve(null)))
+    const req = {
+      header: { params: { id: 1 } },
+      body: {}
+    }
+    const result = await sut.getCompanyById(req)
+    expect(result.statusCode).toBe(404)
+  })
+
+  // deleteCompany
+  test('return code 500 delete throw', async () => {
+    const { sut, CompanyRepositoryStub } = makeSut()
+    jest.spyOn(CompanyRepositoryStub, 'delete').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
     const req = {
       header: 2,
       body: ''
     }
-    const result = await sut.getCompanyById(req)
+    const result = await sut.deleteCompany(req)
     expect(result.statusCode).toBe(500)
+  })
+
+  test('return code 200 delete success', async () => {
+    const { sut } = makeSut()
+    const req = {
+      header: { params: { id: 1 } },
+      body: {}
+    }
+    const result = await sut.deleteCompany(req)
+    expect(result.statusCode).toBe(200)
+  })
+
+  test('return code 404 company not found', async () => {
+    const { sut, CompanyRepositoryStub } = makeSut()
+    jest.spyOn(CompanyRepositoryStub, 'delete').mockReturnValueOnce(new Promise(resolve => resolve(null)))
+    const req = {
+      header: { params: { id: 1 } },
+      body: {}
+    }
+    const result = await sut.deleteCompany(req)
+    expect(result.statusCode).toBe(404)
+  })
+
+  // putCompany
+  test('return code 500 put throw', async () => {
+    const { sut, CompanyRepositoryStub } = makeSut()
+    jest.spyOn(CompanyRepositoryStub, 'put').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
+    const req = {
+      header: { params: { id: 1 } },
+      body: {}
+    }
+    const result = await sut.putCompany(req)
+    expect(result.statusCode).toBe(500)
+  })
+
+  test('return code 200 put success', async () => {
+    const { sut } = makeSut()
+    const req = {
+      header: { params: { id: 1 } },
+      body: {
+        name: 'valid_name',
+        phone: 'valid_phone',
+        address: 'valid_addres',
+        employees: 0,
+        logo: 'valid_logo'
+      }
+    }
+    const result = await sut.putCompany(req)
+    expect(result.statusCode).toBe(200)
+  })
+
+  test('return code 404 company not found', async () => {
+    const { sut, CompanyRepositoryStub } = makeSut()
+    jest.spyOn(CompanyRepositoryStub, 'put').mockReturnValueOnce(new Promise(resolve => resolve(null)))
+    const req = {
+      header: { params: { id: 1 } },
+      body: {}
+    }
+    const result = await sut.putCompany(req)
+    expect(result.statusCode).toBe(404)
   })
 })

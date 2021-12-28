@@ -20,3 +20,4 @@ export class Company extends Model {
   @Column
   is_deleted: boolean
 }
+export default Company
