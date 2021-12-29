@@ -217,7 +217,7 @@ describe('Company Controller', () => {
     const { sut, CompanyRepositoryStub } = makeSut()
     jest.spyOn(CompanyRepositoryStub, 'getById').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
     const req = {
-      header: 2,
+      header: {},
       body: ''
     }
     const result = await sut.getCompanyById(req)

@@ -1,4 +1,5 @@
-import { Model, Table, Column } from 'sequelize-typescript'
+import { Model, Table, Column, HasMany } from 'sequelize-typescript'
+import AvailabilityCompany from './availability-company.model'
 
 @Table({ tableName: 'company', timestamps: false })
 export class Company extends Model {
@@ -19,5 +20,8 @@ export class Company extends Model {
 
   @Column
   is_deleted: boolean
+
+  @HasMany(() => AvailabilityCompany)
+  dates_of_operation: AvailabilityCompany[]
 }
 export default Company

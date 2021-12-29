@@ -2,6 +2,7 @@ import { Repository } from '../presentation/interfaces/repository'
 import { CompanyViewModel } from '../domain/usecases/company-view-model'
 import { sequelize } from '../data/sequelize'
 import { Company } from '../domain/models/company.model'
+import { AvailabilityCompany } from '../domain/models/availability-company.model'
 
 export class CompanyRepository implements Repository {
   private readonly repository = sequelize.getRepository(Company)
@@ -11,7 +12,7 @@ export class CompanyRepository implements Repository {
   }
 
   async get (): Promise<any> {
-    const result = await this.repository.findAll({ where: { is_deleted: false } })
+    const result = await this.repository.findAll({ where: { is_deleted: false }, include: [AvailabilityCompany] })
     return result
   }
 
@@ -24,7 +25,7 @@ export class CompanyRepository implements Repository {
   }
 
   async put (id: number, company: CompanyViewModel): Promise<any> {
-    const result = await this.repository.findByPk(id)
+    const result = await this.repository.findOne({ where: { id, is_deleted: false } })
     if (result) {
       await result.update(company)
       return await result.save()

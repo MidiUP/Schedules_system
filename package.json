@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "start": "nodemon src/main/server.ts ",
-        "test": "jest --passWithNoTests --watch --silent --unhandled-rejections=strict"
+        "test": "jest --passWithNoTests --watch --silent"
     },
     "repository": {
         "type": "git",

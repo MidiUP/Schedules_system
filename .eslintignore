@@ -2,3 +2,5 @@ node_modules
 dist
 jest.config.ts
 20211224005407-create-companies.js
+20211229134242-create-availability-company.js
+20211229182550-create-product.js
