@@ -7,6 +7,7 @@ import { UserViewModel } from '../domain/usecases/user-view-model'
 export class UserRepository implements Repository {
   private readonly repository = sequelize.getRepository(User)
   private readonly repositoryCompany = sequelize.getRepository(Company)
+
   async create (ViewModel: UserViewModel): Promise<any> {
     const company = await this.repositoryCompany.findOne({ where: { id: ViewModel.id_company, is_deleted: false } })
     if (company) {

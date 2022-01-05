@@ -5,3 +5,5 @@ jest.config.ts
 20211229134242-create-availability-company.js
 20211229182550-create-product.js
 20211230133416-create-users.js
+20220105131859-create-product_schedule.js
+20220105130937-create-schedule.js

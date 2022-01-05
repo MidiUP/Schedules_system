@@ -6,6 +6,7 @@ import { AvailabilityCompany } from '../domain/models/availability-company.model
 
 export class CompanyRepository implements Repository {
   private readonly repository = sequelize.getRepository(Company)
+
   async create (ViewModel: CompanyViewModel): Promise<any> {
     const result = await this.repository.create(ViewModel)
     return result
@@ -17,7 +18,7 @@ export class CompanyRepository implements Repository {
   }
 
   async getById (id: number): Promise<any> {
-    const result = await this.repository.findOne({ where: { id, is_deleted: false } })
+    const result = await this.repository.findOne({ where: { id, is_deleted: false }, include: [AvailabilityCompany] })
     if (result) {
       return result
     }
