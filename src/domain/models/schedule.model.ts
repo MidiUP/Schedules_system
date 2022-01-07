@@ -14,13 +14,10 @@ export class Schedule extends Model {
   id_user: number
 
   @Column
-  date: string
+  date_start: string
 
   @Column
-  start_time: string
-
-  @Column
-  end_time: string
+  date_end: string
 
   @Column
   is_deleted: boolean

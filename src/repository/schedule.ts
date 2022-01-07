@@ -7,6 +7,7 @@ import { ScheduleViewModel } from '../domain/usecases/schedule-view-model'
 import ProductShcedule from '../domain/models/product-schedule.model'
 import User from '../domain/models/user.model'
 import Product from '../domain/models/product.model'
+import { addMinutes } from './utils/date'
 
 export class ScheduleRepository implements Repository {
   private readonly repository = sequelize.getRepository(Schedule)
@@ -25,7 +26,7 @@ export class ScheduleRepository implements Repository {
           return null
         }
       }
-      const result = await this.repository.create(viewModel)
+      const result = await this.repository.create(Object.assign({}, viewModel, { date_end: await addMinutes(viewModel.date_start, viewModel.products) }))
       for (const product of viewModel.products) {
         const newProductSchedule = Object.assign({}, product, { id_schedule: result.id, id_company: viewModel.id_company })
         await this.repositoryProductSchedule.create(newProductSchedule)

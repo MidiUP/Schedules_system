@@ -20,16 +20,12 @@ module.exports = {
                 references: { model: 'user', key: 'id' },
                 allowNull: false
             },
-            date: {
+            date_start: {
                 type: Sequelize.DATE,
                 allowNull: false
             },
-            start_time: {
-                type: Sequelize.TIME,
-                allowNull: false
-            },
-            end_time: {
-                type: Sequelize.TIME,
+            date_end: {
+                type: Sequelize.DATE,
                 allowNull: false
             },
             is_deleted: {

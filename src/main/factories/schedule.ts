@@ -9,9 +9,7 @@ export const makeScheduleController = (): ScheduleController => {
   const validatorParams = new Validator({
     id_company: yup.number().integer().required(),
     id_user: yup.number().integer().required(),
-    date: yup.date().required(),
-    start_time: yup.string().required(),
-    end_time: yup.string().required(),
+    date_start: yup.date().required(),
     products: yup.array().of(yup.object().shape({
       id_product: yup.number().integer().required(),
       quantity_product: yup.number().integer().required()
