@@ -1,4 +1,4 @@
-import { Model, Table, Column, ForeignKey, HasMany } from 'sequelize-typescript'
+import { Model, Table, Column, ForeignKey, HasMany, BelongsTo } from 'sequelize-typescript'
 import { Company } from './company.model'
 import { ProductShcedule } from './product-schedule.model'
 import { User } from './user.model'
@@ -24,5 +24,8 @@ export class Schedule extends Model {
 
   @HasMany(() => ProductShcedule)
   products: ProductShcedule[]
+
+  @BelongsTo(() => User, 'id_user')
+  user: User
 }
 export default Schedule
